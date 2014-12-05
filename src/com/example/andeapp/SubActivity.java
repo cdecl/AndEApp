@@ -50,6 +50,7 @@ public class SubActivity extends Activity {
 	private Handler mHandler;
 	private ListAdapter adp_;
 	private String SelectedCode_;
+	private String SelectedName_;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +63,8 @@ public class SubActivity extends Activity {
 		mHandler = new Handler();
 		
 		Intent in = getIntent();
-		SelectedCode_ = in.getStringExtra("Code");
+		SelectedCode_ = in.getStringExtra("SelectedCode");
+		SelectedName_ = in.getStringExtra("SelectedName");
 		
 		final ArrayList<ListAdapter.Model> list = new ArrayList<ListAdapter.Model>();
 		adp_ = new ListAdapter(this, list);
@@ -101,6 +103,7 @@ public class SubActivity extends Activity {
 				url += SelectedCode_;
 			}
 			
+			Log.v("weather api url", url);
 			final String res = HttpUtil.Get(url);
 			
 			mHandler.post(new Runnable() {
@@ -137,11 +140,14 @@ public class SubActivity extends Activity {
 		
 		XPath xpath = XPathFactory.newInstance().newXPath();
        
-		Node nodeCate = (Node)xpath.evaluate("/rss/channel/item/category", doc, XPathConstants.NODE);
+		Node nodeRegion = (Node)xpath.evaluate("/rss/channel/item/category", doc, XPathConstants.NODE);
+		String sRegion = getNodeValue(nodeRegion);
+		
+		// /rss/channel/item/category 데이터가 공백이면, 부모창에서 받은 지역명 사용 
+		if (sRegion.isEmpty()) sRegion = SelectedName_;
+		
 		Node tm = (Node)xpath.evaluate("/rss/channel/item/description/header/tm", doc, XPathConstants.NODE);
 		String sTM = getNodeValue(tm);
-		
-	//	adp_.getDataList().add(new ListAdapter.Model(-1, getNodeValue(nodeCate), "");
 		
 		SimpleDateFormat f = new SimpleDateFormat("yyyyMMdd");
 		Date d = null;
@@ -149,7 +155,6 @@ public class SubActivity extends Activity {
 			d = f.parse(sTM.substring(0, 8));
 			f.applyPattern("yyyy년 MM월 dd일 E");
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -157,7 +162,7 @@ public class SubActivity extends Activity {
         NodeList items = (NodeList)xpath.evaluate("/rss/channel/item/description/body/data", doc, XPathConstants.NODESET);
 		
 		if (items != null) {
-			ListAdapter.Model m = new ListAdapter.Model(getNodeValue(nodeCate), "다른 지역 날씨", "", R.drawable.ic_action_search);
+			ListAdapter.Model m = new ListAdapter.Model(sRegion, "다른 지역 날씨", "", R.drawable.ic_action_search);
 			adp_.getModelList().add(m);
 			
 			for (int i = 0; i < items.getLength(); ++i) { 
@@ -195,7 +200,7 @@ public class SubActivity extends Activity {
 				
 				String sky = getNodeValue(node, "sky");
 				String pty = getNodeValue(node, "pty");
-				Log.v("weather sky,pyt", String.format("%s, %s", sky, pty));
+				//Log.v("weather sky,pyt", String.format("%s, %s", sky, pty));
 				
 				if (pty.equals("1")) {
 					nIcon = R.drawable.w_raining_icon;
@@ -211,7 +216,7 @@ public class SubActivity extends Activity {
 				}
 				
 				m =	new ListAdapter.Model(
-						String.format("%s %02d시 (%s)", f.format(d), Integer.parseInt(getNodeValue(node, "hour")), getNodeValue(nodeCate)),
+						String.format("%s %02d시 (%s)", f.format(d), Integer.parseInt(getNodeValue(node, "hour")), sRegion),
 						String.format("%sºc %s", String.valueOf(nTemp), getNodeValue(node, "wfKor")),
 						sInfo, nIcon
 						);
@@ -238,7 +243,9 @@ public class SubActivity extends Activity {
 				}	
 			}
 			else { // is null
-				sRet = node.getFirstChild().getNodeValue();
+				if (node.getFirstChild() != null) {
+					sRet = node.getFirstChild().getNodeValue();
+				}
 			}
 		}
 		

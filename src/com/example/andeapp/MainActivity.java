@@ -32,6 +32,7 @@ public class MainActivity extends Activity implements OnItemClickListener{
 	private Handler mHandler;
 	private ArrayAdapter<Region> adp_;
 	private String SelectedCode_;
+	private String SelectedName_;
 	
 	private OpenSqlite sqlite_;
 	private SQLiteDatabase db_;
@@ -84,6 +85,7 @@ public class MainActivity extends Activity implements OnItemClickListener{
 	
 	public void DefaultWeatherInfo() {
 		SelectedCode_ = "";
+		SelectedName_ = "";
 		StartSubIntent();
 	}
 	
@@ -123,6 +125,8 @@ public class MainActivity extends Activity implements OnItemClickListener{
 		String dis  = "";
 		
 		SelectedCode_ = r.Code;
+		SelectedName_ = r.Value;
+		
 		if (SelectedCode_.equals(DEFAULT_REGION)) {
 			dis = String.format("현재 지역 날씨 데이터를 가져 오는 중...", r.Value);
 			Toast.makeText(getApplicationContext(), dis, Toast.LENGTH_SHORT).show();
@@ -148,14 +152,14 @@ public class MainActivity extends Activity implements OnItemClickListener{
 		Intent intent = new Intent(getApplicationContext(), SubActivity.class);
 		
 		if (SelectedCode_.length() == 10) {
-			intent.putExtra("Code", SelectedCode_);
+			intent.putExtra("SelectedCode", SelectedCode_);
+			intent.putExtra("SelectedName", SelectedName_);
 		}
 		startActivity(intent);
 	}
 	
 	public void GetRegionData()
 	{
-		//RegionHttpThread tr = new RegionHttpThread();
 		(new RegionDBThread()).start();
 	}
 	
