@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <TableRow
+        android:id="@+id/tableRow1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" 
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="1dp">
+
+        <TextView
+            android:id="@+id/txtRegion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Small Text"
+            android:layout_column="1"
+            android:textSize="14sp"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/tableRow2"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        >
+
+        <ImageView
+            android:id="@+id/imgIcon"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:src="@drawable/ic_action_help" />
+
+        <TextView
+            android:id="@+id/txtTemp"
+            android:layout_height="wrap_content"
+            android:text="Large Text"
+            android:layout_gravity="center_vertical"
+            android:textSize="32sp"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+        
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/tableRow3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:layout_marginBottom="5dp" >
+
+        <TextView
+            android:id="@+id/txtInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Medium Text"
+            android:layout_column="1"
+            android:textSize="16sp"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    </TableRow>
+
+</TableLayout>
